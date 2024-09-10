@@ -10,7 +10,7 @@ console.log("let's node:", ts)
 let url = "http://192.168.0.226:10000/api/v/test/id/1?"
 url = "http://192.168.0.226:10000/user_portal?"
 url = "http://127.0.0.1:10000/custom_apis?"
-
+url = "http://192.168.2.100:10000/custom_apis?"
 
 for (let i = 0; i < 20000; i++) {
 	axios.get(`${url}call=${i}`)

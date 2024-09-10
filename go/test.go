@@ -18,6 +18,7 @@ func (cc *calls) caller(c chan int, i int, cr int) {
 	url := "http://192.168.0.226:10000/api/v/test/id/1?"
 	// url = "http://127.0.0.1:7331//api/v/test/id/1?"
 	url = "http://127.0.0.1:10000/custom_apis?"
+	url = "http://192.168.2.100:10000/custom_apis?"
 
 	_, err := http.Get(fmt.Sprintf("%scall=%v", url, i))
 	if err != nil {
