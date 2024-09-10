@@ -1,0 +1,21 @@
+"editor.tokenColorCustomizations": {
+        "[Monokai Dimmed]": {
+            "types": "#bb7651"
+        }
+    },
+    "workbench.colorCustomizations": {
+         "[Default Dark Modern]": {
+            "editor.background":"#000000",
+            "editor.lineHighlightBackground":"default",
+            "editor.lineHighlightBorder":"#333333",
+            "editorBracketMatch.border":"#000000",
+            "editorBracketMatch.background":"#555555",
+            "editor.wordHighlightBackground":"#00000000",
+            "editor.wordHighlightBorder":"#0c9e26",
+            "editor.selectionHighlightBackground":"#00000000",
+            "editor.selectionHighlightBorder":"#ff0000"
+        },
+        "[Monokai Dimmed]": {
+            "editor.background":"#000000"
+        }
+    },
