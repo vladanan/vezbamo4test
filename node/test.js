@@ -12,7 +12,7 @@ url = "http://192.168.0.226:10000/user_portal?"
 url = "http://127.0.0.1:10000/custom_apis?"
 url = "http://192.168.2.100:10000/custom_apis?"
 
-for (let i = 0; i < 20000; i++) {
+for (let i = 0; i < 5000; i++) {
 	axios.get(`${url}call=${i}`)
 	.then(function (res) {
 		// let dif = new Date() - ti
@@ -23,7 +23,7 @@ for (let i = 0; i < 20000; i++) {
 	})
 	.catch(function (error) {
 		// console.log(error.response.data)
-		if (i == 19999) {
+		if (i == 4999) {
 			console.log("async done", new Date() - ts)
 		}
 		// console.log("err", i	, calls0++)

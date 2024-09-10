@@ -47,7 +47,7 @@ func main() {
 	ts := time.Now()
 	fmt.Println("let's go:", ts)
 
-	c := make(chan int, 100000)
+	c := make(chan int, 5000)
 	calls := calls{call: 0}
 
 	for i := 0; i < cap(c); i++ {
