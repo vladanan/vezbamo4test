@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"sync"
 	"time"
@@ -9,56 +10,83 @@ import (
 
 type calls struct {
 	call int
+	ok   int
+	nok  int
 	mu   sync.Mutex
 }
 
-func (cc *calls) caller(c chan int, i int, cr int) {
-
+func syncCaller(url string, cr int) {
 	// ti := time.Now()
-	url := "http://192.168.0.226:10000/api/v/test/id/1?"
-	// url = "http://127.0.0.1:7331//api/v/test/id/1?"
-	url = "http://127.0.0.1:10000/custom_apis?"
-	url = "http://192.168.2.100:10000/custom_apis?"
+	ok := 0
+	nok := 0
 
-	_, err := http.Get(fmt.Sprintf("%scall=%v", url, i))
+	for i := 0; i < cr; i++ {
+		res, err := http.Get(fmt.Sprintf("%scall=%v", url, i))
+		if err != nil {
+			log.Println(err)
+		}
+		if res.StatusCode != http.StatusOK {
+			nok++
+			// fmt.Println(i, res.StatusCode, time.Since(ti).Milliseconds(), time.Now())
+		} else {
+			ok++
+			// fmt.Println(i)
+		}
+		// fmt.Println(res.Status, i)
+		// ti = time.Now()
+	}
+	fmt.Println("ok:", ok, "nok:", nok)
+}
+
+func (cc *calls) asyncCaller(url string, c chan int, i int, cr int) {
+	// ti := time.Now()
+	res, err := http.Get(fmt.Sprintf("%scall=%v", url, i))
 	if err != nil {
 		fmt.Print(err)
 	}
-	// if res.StatusCode != http.StatusOK {
-	// 	fmt.Println(cc.call, i, res.StatusCode, time.Since(ti).Milliseconds(), time.Now())
-	// } else {
-	// 	fmt.Println(cr, cc.call, i)
-	// }
+	if res.StatusCode != http.StatusOK {
+		cc.nok++
+		// fmt.Println(cc.call, i, res.StatusCode, time.Since(ti).Milliseconds(), time.Now())
+	} else {
+		cc.ok++
+		// fmt.Println(cr, cc.call, i)
+	}
 	// fmt.Println(res.Status, cc.call, i)
 	// ti = time.Now()
 	if cc.call == cr-1 {
-		fmt.Println("over")
+		fmt.Println("over, ok:", cc.ok, "nok", cc.nok)
 		c <- 0
 	}
 	cc.mu.Lock()
 	defer cc.mu.Unlock()
 	cc.call = cc.call + 1
-
 	// c <- res.StatusCode
-
 }
 
 func main() {
+
+	url := "http://192.168.0.226:10000/api/v/test/id/1?"
+	url = "http://127.0.0.1:7331/api/v/test/id/1?"
+	// url = "http://127.0.0.1:10000/custom_apis?"
+	// url = "http://192.168.2.100:7331/custom_apis?"
+	// url = "http://127.0.0.1:7331/custom_apis?"
+
 	ts := time.Now()
 	fmt.Println("let's go:", ts)
 
-	c := make(chan int, 5000)
+	mode := "async"
+
+	c := make(chan int, 75)
 	calls := calls{call: 0}
 
-	for i := 0; i < cap(c); i++ {
-		go calls.caller(c, i, cap(c))
+	if mode == "async" {
+		for i := 0; i < cap(c); i++ {
+			go calls.asyncCaller(url, c, i, cap(c))
+		}
+		<-c
+	} else {
+		syncCaller(url, cap(c))
 	}
-
-	// for statusCode := range c {
-	// 	fmt.Println("status code:", statusCode)
-	// } //114
-
-	<-c
 
 	fmt.Println("go done:", time.Since(ts).Milliseconds(), time.Now())
 
