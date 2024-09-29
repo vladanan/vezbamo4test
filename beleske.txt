@@ -1,3 +1,5 @@
+Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope Process
+
 "editor.tokenColorCustomizations": {
         "[Monokai Dimmed]": {
             "types": "#bb7651"
